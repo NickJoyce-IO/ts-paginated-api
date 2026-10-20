@@ -1,0 +1,18 @@
+{
+  "name": "paginated-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node .fieldwork/cli.ts test",
+    "setup": "node .fieldwork/cli.ts setup",
+    "update": "node .fieldwork/cli.ts update"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "typescript": "^7.0.2"
+  },
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": ">=24"
+  }
+}
