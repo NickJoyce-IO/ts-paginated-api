@@ -15,7 +15,16 @@ export interface Repository {
 
 /** Step 1: the first page of `owner`'s public repositories, as GitHub sent it. */
 export async function fetchFirstPage(owner: string, fetch: Fetch): Promise<unknown> {
-  throw new Error("Not implemented yet");
+  const response = await fetch(
+    `https://api.github.com/users/${encodeURIComponent(owner)}/repos?per_page=100`,
+    { headers: { Accept: "application/vnd.github+json" } },
+  );
+
+  if (!response.ok) {
+    throw new Error(`GitHub request failed with status ${response.status}`);
+  }
+
+  return response.json();
 }
 
 /** Step 2: one repository from GitHub's JSON, checked and turned into a `Repository`. */
