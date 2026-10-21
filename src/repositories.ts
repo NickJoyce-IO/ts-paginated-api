@@ -29,7 +29,32 @@ export async function fetchFirstPage(owner: string, fetch: Fetch): Promise<unkno
 
 /** Step 2: one repository from GitHub's JSON, checked and turned into a `Repository`. */
 export function parseRepository(json: unknown): Repository {
-  throw new Error("Not implemented yet");
+  if (typeof json !== "object" || json === null || Array.isArray(json)) {
+    throw new Error("Expected repository to be an object");
+  }
+
+  if (!("name" in json) || typeof json.name !== "string") {
+    throw new Error("Invalid repository: `name` must be a string");
+  }
+
+  if (
+    !("description" in json) ||
+    (typeof json.description !== "string" && json.description !== null)
+  ) {
+    throw new Error(
+      "Invalid repository: `description` must be a string or null",
+    );
+  }
+
+  if (!("stargazers_count" in json) || typeof json.stargazers_count !== "number") {
+    throw new Error("Invalid repository: `stargazers_count` must be a number");
+  }
+
+  return {
+    name: json.name,
+    description: json.description,
+    stars: json.stargazers_count,
+  };
 }
 
 /** Step 3: the URL of the next page, from a response's `Link` header. */
