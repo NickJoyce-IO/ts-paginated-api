@@ -59,7 +59,19 @@ export function parseRepository(json: unknown): Repository {
 
 /** Step 3: the URL of the next page, from a response's `Link` header. */
 export function nextPageUrl(link: string | null): string | undefined {
-  throw new Error("Not implemented yet");
+  if (link === null) {
+    return undefined;
+  }
+
+  const nextlink = link.split(",").find((part) => part.includes('rel="next"'));
+  if (!nextlink) {
+    return undefined;
+  }
+  const urlMatch = nextlink.match(/<(.+?)>; rel="next"/);
+  if (!urlMatch) {
+    return undefined;
+  }
+  return urlMatch[1];
 }
 
 /** Step 4: every one of `owner`'s public repositories, page by page. */
