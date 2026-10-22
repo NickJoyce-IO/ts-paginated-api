@@ -76,5 +76,24 @@ export function nextPageUrl(link: string | null): string | undefined {
 
 /** Step 4: every one of `owner`'s public repositories, page by page. */
 export async function* listRepositories(owner: string, fetch: Fetch): AsyncGenerator<Repository> {
-  throw new Error("Not implemented yet");
+  let url: string | undefined = `https://api.github.com/users/${encodeURIComponent(owner)}/repos?per_page=100`;
+  while (url !== undefined) {
+    const response = await fetch(url, { headers: { Accept: "application/vnd.github+json"}});
+    
+    if (!response.ok) {
+      throw new Error(`GitHub request failed with status ${response.status}`);
+    }
+      
+    const json = await response.json();
+
+    if (!Array.isArray(json)) {
+      throw new Error("Expected response to be an array of repositories");
+    }
+
+    for (const repoJson of json) {
+      yield parseRepository(repoJson);
+    }
+
+    url = nextPageUrl(response.headers.get("Link"));  
+  }
 }
